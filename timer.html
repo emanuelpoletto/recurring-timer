@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Timer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="manifest" href="manifest.json">
+    <style>
+    body {
+        font-family: monospace;
+        font-size: 1.5em;
+        line-height: 2;
+        text-align: center;
+    }
+    button,
+    input {
+        font-family: inherit;
+        font-size: 1em;
+        text-align: inherit;
+    }
+    </style>
+</head>
+<body>
+    <div>
+        <audio id="audio" src="bells_bells.mp3" controls="true" preload="auto">Audio</audio>
+    </div>
+    <div>
+        <label for="interval">Interval:</label>
+        <input id="interval" type="number" value="5" min="1" max="60" /> min
+    </div>
+    <div>
+        <button onclick="startTimer();">Start</button>
+        <button onclick="stopTimer();">Stop</button>
+    </div>
+    <div id="timer">00:00</div>
+    <script>
+    var a = document.getElementById('audio'),
+        t = document.getElementById('timer'),
+        n = null,
+        i = null,
+        v = 5,
+        s = 0,
+        u = 0;
+
+    function updateTime() {
+        n = new Date();
+        u = n.getTime();
+        alarmTrigger();
+        updateTimer();
+    }
+
+    function updateTimer() {
+        var r = s + v - u + 1000,
+            min,
+            sec;
+        r = new Date(r);
+        min = r.getMinutes();
+        sec = r.getSeconds();
+        t.innerHTML = ( min < 10 ? '0' + min : min ) + ':' + ( sec < 10 ? '0' + sec : sec );
+    }
+
+    function startTimer() {
+        if (i != null) {
+            clearInterval(i);
+        }
+        n = new Date();
+        s = n.getTime();
+        v = document.getElementById('interval').value * 1000 * 60;
+        i = setInterval(updateTime, 200);
+    }
+
+    function stopTimer() {
+        if (i != null) {
+            clearInterval(i);
+            a.pause();
+            a.currentTime = 0;
+        }
+    }
+
+    function alarmTrigger() {
+        if (u >= (s + v)) {
+            s = u;
+            a.play();
+        }
+    }
+    </script>
+</body>
+</html>
